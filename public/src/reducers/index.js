@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import playerReducer from './playerReducer';
+import eventReducer from './eventReducer';
 
 export default combineReducers({
-    playerReducer
+    eventReducer
 })

@@ -3,7 +3,6 @@ const UserModel = require('../model/userModel');
 const { HTTP_STATUS_CODES, PER_PAGE } = require('../constants/constants');
 
 async function getUsers(req, res) {
-    console.log(req.body);
     const user = await UserModel.User.findById(req.user._id).select('-password');
     res.send(user);
 }
@@ -88,7 +87,6 @@ async function getEventList(req, res) {
         eventName,
         isFull
     } = req.query;
-    console.log(req.query.page);
 
     if (page === undefined) {
         res
