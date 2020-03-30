@@ -1,7 +1,7 @@
 ## RUNNING PROJECT
 
 You have to clone whole repository
-### `git clone https://github.com/Dorregarai/music-player.git`
+### `git clone https://github.com/Dorregarai/event-management.git`
 
 Open both folders in different teminals and run
 ### `npm install`
