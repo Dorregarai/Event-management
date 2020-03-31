@@ -15,7 +15,6 @@ export default (state = initialState, action) => {
                 data: action.payload
             });
         case TYPES.POST_EVENT_REQUEST:
-            console.log(action);
             return Object.assign({}, state, {
                 eventToCreate: action
             });

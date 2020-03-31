@@ -13,7 +13,6 @@ const apiGetEventList = page => {
 };
 
 const apiCreateEvent = (data) => {
-    console.log(data);
     return axios
         .post('http://localhost:3001/api', {
             eventType: data.eventType,
@@ -45,7 +44,6 @@ export function* fetchGetEventList(action) {
 export function* fetchCreateEvent(action) {
     try {
         const eventToCreate = yield call(apiCreateEvent, action);
-        console.log(action);
         yield put({ type: TYPES.POST_EVENT_SUCCESS, payload: eventToCreate })
     } catch (error) {
         yield put({ type: TYPES.POST_EVENT_FAILURE, payload: error })

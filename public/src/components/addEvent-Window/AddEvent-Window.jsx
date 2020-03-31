@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Button, Select, DatePicker } from 'antd';
+import Window from "./styled";
 
 export default function AddEvent(props) {
     const { Option } = Select;
@@ -18,12 +19,31 @@ export default function AddEvent(props) {
         addInfValue
     };
 
+    const handleButtonClick = () => {
+        if(
+            state.nameValue &&
+            state.dateValue &&
+            state.placeValue
+        ) {
+            props.props.createEvent(
+                state.selectValue,
+                state.nameValue,
+                state.dateValue,
+                state.placeValue,
+                state.addInfValue
+            );
+            props.setDisable(false);
+            props.setOpacity(1);
+            props.setPointerEvents('');
+        }
+    };
+
     return(
-        <div>
+        <Window>
             <div>
                 <Select
                     defaultValue={selectValue}
-                    style={{ width: 200 }}
+                    style={{ width: 350, margin: 10 }}
                     onChange={value => setSelectValue(value)}
                 >
                     <Option value="MEETING">
@@ -46,43 +66,39 @@ export default function AddEvent(props) {
             <div>
                 <Input
                     placeholder="Event name"
-                    style={{ width: 200 }}
+                    style={{ width: 350, margin: 10 }}
+                    required
                     onChange={({target: { value }}) => setNameValue(value)}
                 />
             </div>
             <div>
                 <DatePicker
-                    style={{ width: 200 }}
+                    style={{ width: 350, margin: 10 }}
                     onChange={(date, dateString) => setDateValue(dateString)}
                 />
             </div>
             <div>
                 <Input
                     placeholder="Place"
-                    style={{ width: 200 }}
+                    style={{ width: 350, margin: 10 }}
                     onChange={({target: { value }}) => setPlaceValue(value)}
                 />
             </div>
             <div>
                 <TextArea
                     placeholder="Addition information"
-                    style={{ width: 200 }}
+                    style={{ width: 350, margin: 10 }}
                     onChange={({target: { value }}) => setAddInfValue(value)}
                     autoSize
                 />
             </div>
             <Button
-                onClick={() => props.props.createEvent(
-                state.selectValue,
-                state.nameValue,
-                state.dateValue,
-                state.placeValue,
-                state.addInfValue
-                )}
+                onClick={handleButtonClick}
                 type='primary'
+                style={{ margin: 10 }}
             >
                 Submit
             </Button>
-        </div>
+        </Window>
     )
 }

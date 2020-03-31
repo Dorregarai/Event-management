@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
+import TableComp from "./styled";
 
 export default function ContentTable(props) {
     useEffect(() => {
         props.props.getEventList(1)
-    }, [1]);
+    });
 
     const columns = [
         {
@@ -38,11 +39,9 @@ export default function ContentTable(props) {
             key: 'additionalInfo'
         }
     ];
-    console.log(props);
-
     return (
-            <div>
-                <Table dataSource={props.props.data.events} columns={columns} /*rowKey={ props.data.events[0] }*/ />
-            </div>
+            <TableComp opacity={props.opacity} pointerEvents={props.pointerEvents} >
+                <Table dataSource={props.props.data.events} columns={columns} />
+            </TableComp>
         )
 }

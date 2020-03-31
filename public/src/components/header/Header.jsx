@@ -1,16 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
 import { PageHeader } from "antd";
 //import LogButton from "../logButton-hooks";
 import AddButton from "../addButton";
 
-export default function Header() {
-    const [ isAddButtonClicked, setAddButtonClicked ] = useState(false);
-
-    function handleAddButtonClick() {
-    setAddButtonClicked(!isAddButtonClicked);
-    console.log(isAddButtonClicked);
-    }
-
+export default function Header(props) {
     return (
         <div>
             <PageHeader
@@ -21,7 +14,7 @@ export default function Header() {
                     <LogButton child="Sign In" isVisible="true" />,
                 ]}*/
             />
-            <AddButton isClicked={handleAddButtonClick}/>
+            <AddButton isClicked={props.isClicked} disabled={props.disabled} />
         </div>
     )
 }

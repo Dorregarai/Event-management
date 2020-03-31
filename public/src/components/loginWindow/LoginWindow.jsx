@@ -10,7 +10,6 @@ export default function LogInWindow(props) {
     function loginWindowRender() {
         if(props.child === 'Log In') {
             return (
-                <div>
                     <Window>
                         <PageHeader
                             title='Log in'
@@ -43,7 +42,6 @@ export default function LogInWindow(props) {
                             type='primary'>{props.child}
                         </Button>
                     </Window>
-                </div>
             )
         }
     }
