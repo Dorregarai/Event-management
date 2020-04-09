@@ -10,10 +10,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getEventList: page => {
+        getEventList: () => {
             dispatch({
-                type: TYPES.GET_EVENTLIST_REQUEST,
-                page
+                type: TYPES.GET_EVENTLIST_REQUEST
             })
         },
         createEvent: (eventType, eventName, date, place, addInfo) => {
@@ -26,13 +25,23 @@ function mapDispatchToProps(dispatch) {
                 addInfo
             })
         },
-        /*userLogIn: (username, password) => {
+        editEvent: (id, eventType, eventName, date, place, addInfo) => {
             dispatch({
-                type: TYPES.POST_USER_LOG_REQUEST,
-                username,
-                password
+                type: TYPES.PUT_EVENT_REQUEST,
+                id,
+                eventType,
+                eventName,
+                date,
+                place,
+                addInfo
             })
-        }*/
+        },
+        removeEvent: id => {
+            dispatch({
+                type: TYPES.REMOVE_EVENT_REQUEST,
+                _id: id
+            })
+        }
     }
 }
 

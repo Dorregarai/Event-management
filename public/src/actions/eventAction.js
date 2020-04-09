@@ -2,13 +2,9 @@ import axios from 'axios';
 import * as TYPES from './types';
 import { call, put } from 'redux-saga/effects';
 
-const apiGetEventList = page => {
+const apiGetEventList = () => {
     return axios
-        .get('http://localhost:3001/api', {
-        params: {
-            page
-        }
-    })
+        .get('http://localhost:3001/api')
         .then(response => response.data)
 };
 
@@ -23,13 +19,23 @@ const apiCreateEvent = (data) => {
     })
 };
 
-const apiSignInUser = (login, password) => {
-    return axios.post('http://localhost:3001/api', {
-        body: {
-            login,
-            password
-        }
-    })
+const apiEditEvent = (data) => {
+    return axios
+        .put('http://localhost:3001/api', {
+            _id: data.id,
+            eventType: data.eventType,
+            eventName: data.eventName,
+            date: data.date,
+            place: data.place,
+            additionalInfo: data.addInfo
+        })
+        .then(response => response.data)
+};
+
+const apiRemoveEvent = (data) => {
+    return axios
+        .put('http://localhost:3001/api/' + data._id)
+        .then(response => response.data)
 };
 
 export function* fetchGetEventList(action) {
@@ -50,11 +56,21 @@ export function* fetchCreateEvent(action) {
     }
 }
 
-export  function* fetchSignInUser(action) {
+export function* fetchEditEvent(action) {
     try {
-        const logData = yield call(apiSignInUser, action);
-        yield put({ type: TYPES.POST_USER_LOG_SUCCESS, payload: logData })
+        const eventToEdit = yield call(apiEditEvent, action);
+        yield put({ type: TYPES.PUT_EVENT_SUCCESS, payload: eventToEdit })
     } catch (error) {
-        yield put({ type: TYPES.POST_USER_LOG_FAILURE, payload: error })
+        yield put({ type: TYPES.PUT_EVENT_FAILURE, payload: error })
+    }
+}
+
+export function* fetchRemoveEvent(action) {
+    console.log(action);
+    try {
+        const eventToRemove = yield call(apiRemoveEvent, action);
+        yield put({ type: TYPES.REMOVE_EVENT_SUCCESS, payload: eventToRemove })
+    } catch (error) {
+        yield put({ type: TYPES.REMOVE_EVENT_FAILURE, payload: error })
     }
 }

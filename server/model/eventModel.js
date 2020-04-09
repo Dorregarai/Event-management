@@ -29,10 +29,7 @@ const EventSchema = new mongoose.Schema({
     },
     additionalInfo: {
         type: String
-    }/*,
-    countOfParticipants: {
-        type: Number
-    }*/
+    }
 });
 
 function validateEvent(event) {
@@ -43,24 +40,32 @@ function validateEvent(event) {
         createdOn: Joi.date().format('YYYY-MM-DD').raw(),
         place: Joi.string().required(),
         additionalInfo: Joi.string(),
-        countOfParticipants: Joi.number()
     });
     return schema.validate(event);
 }
 
 const Event = mongoose.model('Event', EventSchema);
 
-function getEventList(eventType, eventName, page, perPage = PER_PAGE.EVENTS_PER_PAGE){
+function getEventList(eventType, eventName){
     const query = {};
     if (eventType !== undefined) query.eventType = eventType;
     if (eventName !== undefined) query.eventName = eventName;
 
     const field = null;
-    const options = {
-        skip: page * perPage,
-        limit: perPage,
-    };
-    return Event.find(query, field, options)
+    return Event.find(query, field)
+}
+
+function editEvent(id, eventType, eventName, date, place, additionalInfo) {
+    const query = { _id: id };
+    const modification = { $set: { eventType, eventName, date, place, additionalInfo } };
+    return Event.updateOne(query, modification);
+}
+
+function removeEvent(id) {
+    console.log(id);
+    const query = { _id: id };
+    //const modification = { $set: { removed: true } };
+    return Event.deleteOne(query)
 }
 
 /*function subscribeEvent(id) {
@@ -73,5 +78,7 @@ module.exports = {
     Event,
     validateEvent,
     getEventList,
+    editEvent,
+    removeEvent
     //subscribeEvent,
 };
