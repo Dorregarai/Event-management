@@ -66,7 +66,6 @@ export function* fetchEditEvent(action) {
 }
 
 export function* fetchRemoveEvent(action) {
-    console.log(action);
     try {
         const eventToRemove = yield call(apiRemoveEvent, action);
         yield put({ type: TYPES.REMOVE_EVENT_SUCCESS, payload: eventToRemove })

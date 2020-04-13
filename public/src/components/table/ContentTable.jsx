@@ -1,40 +1,24 @@
-import React, { useState, useCallback } from "react";
-import {Table, Button, Tooltip} from "antd";
+import React, { useState } from "react";
+import { Table, Button } from "antd";
 import TableComponent from "./styled";
 import AddButton from "../addButton/AddButton";
 
 export default function ContentTable(props) {
-    const [ selectedRowKey, setSelectedRowKey ] = useState();
-    const [ disableButton, setDisableButton ] = useState(true);
-
-    const onSelectChange = useCallback(selectedRowKey => {
-            console.log('selectedRowKeys changed: ', selectedRowKey);
-            setSelectedRowKey(selectedRowKey);
-            setDisableButton(false);
-            return selectedRowKey;
-        }, []);
-
-    const rowSelection = {
-        selectedRowKey,
-        onChange: onSelectChange,
-        type: 'radio'
+    const setCurrentEvent = (record) => {
+            props.setCurrentEvent(record);
+            props.setID(record.ID);
     };
 
-    if(props.props.data !== undefined && selectedRowKey) {
-        let selectedEvent = props.props.data[selectedRowKey];
-        let id = selectedEvent.ID;
-        props.setID(id);
-    }
-
-    const handleEditButtonClick = () => {
+    const handleEditButtonClick = (record) => {
+        setCurrentEvent(record);
         props.setIsEdit(true);
         props.setDisable(true);
         props.setOpacity(0.5);
         props.setPointerEvents('none');
     };
 
-    const handleRemoveButtonClick = () => {
-        props.props.removeEvent(props.ID);
+    const handleRemoveButtonClick = (ID) => {
+        props.props.removeEvent(ID);
         setTimeout(() => {
             props.props.getEventList();
         }, 500);
@@ -45,22 +29,46 @@ export default function ContentTable(props) {
             {
                 title: 'Event name',
                 dataIndex: 'eventName',
-                key: 'ID'
+                key: 'eventName'
             },
             {
                 title: 'Event type',
                 dataIndex: 'eventType',
-                key: 'eventType'
+                key: 'eventType',
+                filters: [
+                    {
+                        text: 'MEETING',
+                        value: 'MEETING',
+                    },
+                    {
+                        text: 'TEA PARTY',
+                        value: 'TEA PARTY',
+                    },
+                    {
+                        text: 'WEDDING',
+                        value: 'WEDDING',
+                    },
+                    {
+                        text: 'BIRTHDAY',
+                        value: 'BIRTHDAY',
+                    },
+                    {
+                        text: 'OTHER',
+                        value: 'OTHER',
+                    }
+                ],
+                onFilter: (value, record) => record.eventType.indexOf(value) === 0,
             },
             {
                 title: 'Date',
                 dataIndex: 'date',
-                key: 'date'
+                key: 'date',
+                sorter: (a, b) => a.date > b.date,
             },
             {
                 title: 'Created on',
                 dataIndex: 'createdOn',
-                key: 'createdOn'
+                key: 'createdOn',
             },
             {
                 title: 'Place',
@@ -71,35 +79,27 @@ export default function ContentTable(props) {
                 title: 'Additional information',
                 dataIndex: 'additionalInfo',
                 key: 'additionalInfo'
+            },
+            {
+                title: 'Action',
+                key: 'action',
+                render: record => {
+                    return(
+                        <div>
+                            <Button type='link' onClick={() => handleEditButtonClick(record)} >Edit</Button>
+                            <Button type='link' onClick={() => handleRemoveButtonClick(record.ID)} >Remove</Button>
+                        </div>
+                    )
+                }
             }
         ]
     });
 
     return (
             <TableComponent opacity={props.opacity} pointerEvents={props.pointerEvents} >
-                <AddButton isClicked={props.isClicked} disabled={props.disabled} />
-                <Tooltip title='Select event to edit or delete' >
-                    <Button
-                        style={{marginRight: 10}}
-                        type='primary'
-                        shape='round'
-                        icon='edit'
-                        onClick={handleEditButtonClick}
-                        disabled={disableButton}
-                    />
-                </Tooltip>
-                <Tooltip title='Select event to edit or delete' >
-                    <Button
-                        style={{marginRight: 10}}
-                        type='primary'
-                        shape='round'
-                        icon='delete'
-                        onClick={handleRemoveButtonClick}
-                        disabled={disableButton}
-                    />
-                </Tooltip>
+                <AddButton isClicked={props.isClicked} disable={props.disable} />
+
                 <Table
-                    rowSelection={rowSelection}
                     dataSource={props.props.data}
                     columns={data.columns}
                 />

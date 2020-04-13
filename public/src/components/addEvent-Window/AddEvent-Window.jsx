@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Button, Select, DatePicker } from 'antd';
+import moment from 'moment';
 import Window from "./styled";
 
 export default function AddEvent(props) {
@@ -8,7 +9,7 @@ export default function AddEvent(props) {
 
     const [ selectValue, setSelectValue ] = useState('MEETING');
     const [ nameValue, setNameValue ] = useState(undefined);
-    const [ dateValue, setDateValue ] = useState(undefined);
+    const [ dateValue, setDateValue ] = useState(null);
     const [ placeValue, setPlaceValue ] = useState(undefined);
     const [ addInfValue, setAddInfValue ] = useState(undefined);
     let tempState = {
@@ -22,28 +23,27 @@ export default function AddEvent(props) {
     const handleButtonClick = () => {
             if(!props.isEdit) {
                 if(
-                    tempState.nameValue &&
-                    tempState.dateValue &&
-                    tempState.placeValue
+                    props.state.nameValue &&
+                    props.state.dateValue &&
+                    props.state.placeValue
                 ) {
                     console.log('CREATE');
                     props.props.createEvent(
-                        tempState.selectValue,
-                        tempState.nameValue,
-                        tempState.dateValue,
-                        tempState.placeValue,
-                        tempState.addInfValue
+                        props.state.selectValue,
+                        props.state.nameValue,
+                        props.state.dateValue,
+                        props.state.placeValue,
+                        props.state.addInfValue
                     );
                 }
             } else if(props.isEdit){
-                    console.log(props.ID);
                 props.props.editEvent(
                     props.ID,
-                    tempState.selectValue,
-                    tempState.nameValue,
-                    tempState.dateValue,
-                    tempState.placeValue,
-                    tempState.addInfValue
+                    props.state.selectValue,
+                    props.state.nameValue,
+                    props.state.dateValue,
+                    props.state.placeValue,
+                    props.state.addInfValue
                 );
             }
             props.setDisable(false);
@@ -56,15 +56,21 @@ export default function AddEvent(props) {
         props.setDisable(false);
         props.setOpacity(1);
         props.setPointerEvents('');
-
     };
+
+    let dataToDefault = { eventType: selectValue };
+    if(props.currentEvent !== undefined && props.isEdit) {
+        dataToDefault = {
+            ...props.currentEvent
+        }
+    }
 
     return(
         <Window>
 
             <div>
                 <Select
-                    defaultValue={selectValue}
+                    defaultValue={dataToDefault.eventType}
                     style={{ width: 350, margin: 10 }}
                     onChange={value => {
                         setSelectValue(value);
@@ -92,6 +98,7 @@ export default function AddEvent(props) {
             <div>
                 <Input
                     placeholder="Event name"
+                    defaultValue={dataToDefault.eventName}
                     style={{ width: 350, margin: 10 }}
                     required
                     onChange={({target: { value }}) => {
@@ -104,6 +111,7 @@ export default function AddEvent(props) {
             <div>
                 <DatePicker
                     style={{ width: 350, margin: 10 }}
+                    defaultValue={moment(dataToDefault.date, 'YYYY-MM-DD')}
                     onChange={(date, dateString) => {
                         setDateValue(dateString);
                         props.setState(tempState)
@@ -114,6 +122,7 @@ export default function AddEvent(props) {
             <div>
                 <Input
                     placeholder="Place"
+                    defaultValue={dataToDefault.place}
                     style={{ width: 350, margin: 10 }}
                     onChange={({target: { value }}) => {
                         setPlaceValue(value);
@@ -125,6 +134,7 @@ export default function AddEvent(props) {
             <div>
                 <TextArea
                     placeholder="Addition information"
+                    defaultValue={dataToDefault.additionalInfo}
                     style={{ width: 350, margin: 10 }}
                     onChange={({target: { value }}) => {
                         setAddInfValue(value);

@@ -31,7 +31,6 @@ export default (state = initialState, action) => {
                 dataPut: action.payload
             });
         case TYPES.REMOVE_EVENT_REQUEST:
-            console.log(action._id);
             return Object.assign({}, state, {
                 eventToRemove: action._id
             });

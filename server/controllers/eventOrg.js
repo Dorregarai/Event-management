@@ -1,14 +1,13 @@
 const EventModel = require('../model/eventModel');
-const UserModel = require('../model/userModel');
-const { HTTP_STATUS_CODES, PER_PAGE } = require('../constants/constants');
+const { HTTP_STATUS_CODES } = require('../constants/constants');
 
 function transformEvent({ _doc: event }) {
-    return {
-        ...event,
-        ID: event._id,
-        _id: undefined,
-        __v: undefined,
-    };
+        return {
+            ...event,
+            ID: event._id,
+            _id: undefined,
+            __v: undefined,
+        };
 }
 
 const asyncController = route => (req, res) => {
@@ -45,8 +44,6 @@ async function createEvent(req, res) {
         additionalInfo,
         countOfParticipants = 0
     } = req.body;
-
-    console.log(req.body);
 
     // validate the request body first
     const { error } = EventModel.validateEvent(req.body);
@@ -92,7 +89,6 @@ async function editEvent(req, res) {
 }
 
 async function removeEvent(req, res) {
-    console.log(req.params);
     EventModel
         .removeEvent( req.params.id )
         .then(() => {

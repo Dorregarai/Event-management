@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const JoiBase = require("@hapi/joi");
 const JoiDate = require("@hapi/joi-date");
-const { PER_PAGE } = require('../constants/constants');
 
 const Joi = JoiBase.extend(JoiDate); // extend Joi with Joi Date
 
@@ -29,7 +28,11 @@ const EventSchema = new mongoose.Schema({
     },
     additionalInfo: {
         type: String
-    }
+    },
+    isView: {
+        type: Boolean,
+        default: true
+    },
 });
 
 function validateEvent(event) {
@@ -40,6 +43,7 @@ function validateEvent(event) {
         createdOn: Joi.date().format('YYYY-MM-DD').raw(),
         place: Joi.string().required(),
         additionalInfo: Joi.string(),
+        isView: Joi.boolean(),
     });
     return schema.validate(event);
 }
@@ -47,7 +51,7 @@ function validateEvent(event) {
 const Event = mongoose.model('Event', EventSchema);
 
 function getEventList(eventType, eventName){
-    const query = {};
+    const query = { isView: true };
     if (eventType !== undefined) query.eventType = eventType;
     if (eventName !== undefined) query.eventName = eventName;
 
@@ -57,15 +61,14 @@ function getEventList(eventType, eventName){
 
 function editEvent(id, eventType, eventName, date, place, additionalInfo) {
     const query = { _id: id };
-    const modification = { $set: { eventType, eventName, date, place, additionalInfo } };
+    const modification = { $set: { eventType, eventName, date, place, additionalInfo }};
     return Event.updateOne(query, modification);
 }
 
 function removeEvent(id) {
-    console.log(id);
     const query = { _id: id };
     //const modification = { $set: { removed: true } };
-    return Event.deleteOne(query)
+    return Event.updateOne(query, { $set: { isView: false }})
 }
 
 /*function subscribeEvent(id) {
