@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const JoiBase = require("@hapi/joi");
 const JoiDate = require("@hapi/joi-date");
 
-const Joi = JoiBase.extend(JoiDate); // extend Joi with Joi Date
+const Joi = JoiBase.extend(JoiDate);
 
 const EventSchema = new mongoose.Schema({
     eventType: {
@@ -15,7 +15,7 @@ const EventSchema = new mongoose.Schema({
         required: true
     },
     date: {
-        type: String,
+        type: Date,
         required: true
     },
     createdOn: {
@@ -67,15 +67,15 @@ function editEvent(id, eventType, eventName, date, place, additionalInfo) {
 
 function removeEvent(id) {
     const query = { _id: id };
-    //const modification = { $set: { removed: true } };
     return Event.updateOne(query, { $set: { isView: false }})
 }
 
-/*function subscribeEvent(id) {
-    const query = { _id: id };
-    const modification = { $set: { countOfParticipants: + 1 } };
+(() => {
+    const query = { date: { $lte: Date.now() }};
+    const modification = { $set: { isView: false }};
+    console.log(Event.find(query), null);
     return Event.updateOne(query, modification)
-}*/
+})();
 
 module.exports = {
     Event,
@@ -83,5 +83,4 @@ module.exports = {
     getEventList,
     editEvent,
     removeEvent
-    //subscribeEvent,
 };

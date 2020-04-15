@@ -45,7 +45,6 @@ async function createEvent(req, res) {
         countOfParticipants = 0
     } = req.body;
 
-    // validate the request body first
     const { error } = EventModel.validateEvent(req.body);
     if(error) {
         return res

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Table, Button } from "antd";
+import { Table } from "antd";
 import TableComponent from "./styled";
-import AddButton from "../addButton/AddButton";
+import HandleButton from "../handleButton/HandleButton";
 
 export default function ContentTable(props) {
     const setCurrentEvent = (record) => {
@@ -69,6 +69,7 @@ export default function ContentTable(props) {
                 title: 'Created on',
                 dataIndex: 'createdOn',
                 key: 'createdOn',
+                sorter: (a, b) => a.createdOn > b.createdOn,
             },
             {
                 title: 'Place',
@@ -86,8 +87,21 @@ export default function ContentTable(props) {
                 render: record => {
                     return(
                         <div>
-                            <Button type='link' onClick={() => handleEditButtonClick(record)} >Edit</Button>
-                            <Button type='link' onClick={() => handleRemoveButtonClick(record.ID)} >Remove</Button>
+
+                            <HandleButton
+                                type='link'
+                                onClick={() => handleEditButtonClick(record)}
+                            >
+                                Edit
+                            </HandleButton>
+
+                            <HandleButton
+                                type='link'
+                                onClick={() => handleRemoveButtonClick(record.ID)}
+                            >
+                                Remove
+                            </HandleButton>
+
                         </div>
                     )
                 }
@@ -97,12 +111,20 @@ export default function ContentTable(props) {
 
     return (
             <TableComponent opacity={props.opacity} pointerEvents={props.pointerEvents} >
-                <AddButton isClicked={props.isClicked} disable={props.disable} />
+
+                <HandleButton
+                    type='primary'
+                    shape='round'
+                    icon='plus'
+                    onClick={props.isClicked}
+                    disable={props.disable}
+                />
 
                 <Table
                     dataSource={props.props.data}
                     columns={data.columns}
                 />
+
             </TableComponent>
         )
 }

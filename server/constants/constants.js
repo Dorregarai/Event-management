@@ -7,12 +7,7 @@ const HTTP_STATUS_CODES = {
     INTERNAL_SERVER_ERROR: 500,
 };
 
-const PER_PAGE = {
-    EVENTS_PER_PAGE: 10
-};
-
 
 module.exports = {
-    HTTP_STATUS_CODES,
-    PER_PAGE
+    HTTP_STATUS_CODES
 };

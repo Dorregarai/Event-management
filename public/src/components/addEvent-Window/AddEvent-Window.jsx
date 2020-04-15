@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Input, Button, Select, DatePicker } from 'antd';
+import { Input, Select, DatePicker } from 'antd';
+import HandleButton from "../handleButton";
 import moment from 'moment';
 import Window from "./styled";
 
@@ -7,50 +8,68 @@ export default function AddEvent(props) {
     const { Option } = Select;
     const { TextArea } = Input;
 
-    const [ selectValue, setSelectValue ] = useState('MEETING');
-    const [ nameValue, setNameValue ] = useState(undefined);
-    const [ dateValue, setDateValue ] = useState(null);
-    const [ placeValue, setPlaceValue ] = useState(undefined);
-    const [ addInfValue, setAddInfValue ] = useState(undefined);
-    let tempState = {
-        selectValue,
-        nameValue,
-        dateValue,
-        placeValue,
-        addInfValue
-    };
+    const [ selectValue, setSelectValue ] = useState(
+        props.currentEvent.eventType ? props.currentEvent.eventType : 'MEETING'
+    );
+    const [ nameValue, setNameValue ] = useState(
+        props.currentEvent.eventName ? props.currentEvent.eventName : undefined
+    );
+    const [ dateValue, setDateValue ] = useState(
+        props.currentEvent.date ? props.currentEvent.date : null
+    );
+    const [ placeValue, setPlaceValue ] = useState(
+        props.currentEvent.place ? props.currentEvent.place : undefined
+    );
+    const [ addInfValue, setAddInfValue ] = useState(
+        props.currentEvent.additionalInfo ? props.currentEvent.additionalInfo : undefined
+    );
+
+    if(
+        nameValue !== undefined &&
+        dateValue !== null &&
+        placeValue !== undefined
+    ) {
+        props.setHandleButtonDisabled(false);
+        console.log(props.handleButtonDisabled);
+    }
 
     const handleButtonClick = () => {
-            if(!props.isEdit) {
-                if(
-                    props.state.nameValue &&
-                    props.state.dateValue &&
-                    props.state.placeValue
+        if(
+            nameValue !== undefined ||
+            dateValue !== undefined ||
+            placeValue !== undefined
+        ) {
+            if (!props.isEdit) {
+                if (
+                    nameValue &&
+                    dateValue &&
+                    placeValue
                 ) {
                     console.log('CREATE');
                     props.props.createEvent(
-                        props.state.selectValue,
-                        props.state.nameValue,
-                        props.state.dateValue,
-                        props.state.placeValue,
-                        props.state.addInfValue
+                        selectValue,
+                        nameValue,
+                        dateValue,
+                        placeValue,
+                        addInfValue
                     );
                 }
-            } else if(props.isEdit){
+            } else if (props.isEdit) {
                 props.props.editEvent(
                     props.ID,
-                    props.state.selectValue,
-                    props.state.nameValue,
-                    props.state.dateValue,
-                    props.state.placeValue,
-                    props.state.addInfValue
+                    selectValue,
+                    nameValue,
+                    dateValue,
+                    placeValue,
+                    addInfValue
                 );
             }
             props.setDisable(false);
             props.setOpacity(1);
             props.setPointerEvents('');
             setTimeout(() => props.props.getEventList(), 500)
-        };
+        }
+    };
 
     const handleCancelClick = () => {
         props.setDisable(false);
@@ -62,102 +81,97 @@ export default function AddEvent(props) {
     if(props.currentEvent !== undefined && props.isEdit) {
         dataToDefault = {
             ...props.currentEvent
-        }
+        };
     }
 
     return(
         <Window>
+                <div>
+                    <Select
+                        defaultValue={dataToDefault.eventType}
+                        style={{ width: 350, margin: 10 }}
+                        onChange={value => {
+                            setSelectValue(value);
+                        }}
+                    >
+                        <Option value="MEETING">
+                            MEETING
+                        </Option>
+                        <Option value="TEA PARTY">
+                            TEA PARTY
+                        </Option>
+                        <Option value="WEDDING">
+                            WEDDING
+                        </Option>
+                        <Option value="BIRTHDAY">
+                            BIRTHDAY
+                        </Option>
+                        <Option value="OTHER">
+                            OTHER
+                        </Option>
+                    </Select>
+                </div>
 
-            <div>
-                <Select
-                    defaultValue={dataToDefault.eventType}
-                    style={{ width: 350, margin: 10 }}
-                    onChange={value => {
-                        setSelectValue(value);
-                        props.setState(tempState)
-                    }}
+                <div>
+                    <Input
+                        placeholder="Event name"
+                        defaultValue={dataToDefault.eventName}
+                        style={{ width: 350, margin: 10 }}
+                        required
+                        onChange={({target: { value }}) => {
+                            setNameValue(value);
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <DatePicker
+                        style={{ width: 350, margin: 10 }}
+                        defaultValue={moment(dataToDefault.date, 'YYYY-MM-DD')}
+                        onChange={(date, dateString) => {
+                            setDateValue(dateString);
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <Input
+                        placeholder="Place"
+                        defaultValue={dataToDefault.place}
+                        style={{ width: 350, margin: 10 }}
+                        onChange={({target: { value }}) => {
+                            setPlaceValue(value);
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <TextArea
+                        placeholder="Addition information"
+                        defaultValue={dataToDefault.additionalInfo}
+                        style={{ width: 350, margin: 10 }}
+                        onChange={({target: { value }}) => {
+                            setAddInfValue(value);
+                        }}
+                        autoSize
+                    />
+                </div>
+
+                <HandleButton
+                    onClick={() => handleButtonClick()}
+                    type='primary'
+                    disabled={props.handleButtonDisabled}
+                    style={{ margin: 10 }}
                 >
-                    <Option value="MEETING">
-                        MEETING
-                    </Option>
-                    <Option value="TEA PARTY">
-                        TEA PARTY
-                    </Option>
-                    <Option value="WEDDING">
-                        WEDDING
-                    </Option>
-                    <Option value="BIRTHDAY">
-                        BIRTHDAY
-                    </Option>
-                    <Option value="OTHER">
-                        OTHER
-                    </Option>
-                </Select>
-            </div>
+                    Submit
+                </HandleButton>
 
-            <div>
-                <Input
-                    placeholder="Event name"
-                    defaultValue={dataToDefault.eventName}
-                    style={{ width: 350, margin: 10 }}
-                    required
-                    onChange={({target: { value }}) => {
-                        setNameValue(value);
-                        props.setState(tempState)
-                    }}
-                />
-            </div>
-
-            <div>
-                <DatePicker
-                    style={{ width: 350, margin: 10 }}
-                    defaultValue={moment(dataToDefault.date, 'YYYY-MM-DD')}
-                    onChange={(date, dateString) => {
-                        setDateValue(dateString);
-                        props.setState(tempState)
-                    }}
-                />
-            </div>
-
-            <div>
-                <Input
-                    placeholder="Place"
-                    defaultValue={dataToDefault.place}
-                    style={{ width: 350, margin: 10 }}
-                    onChange={({target: { value }}) => {
-                        setPlaceValue(value);
-                        props.setState(tempState)
-                    }}
-                />
-            </div>
-
-            <div>
-                <TextArea
-                    placeholder="Addition information"
-                    defaultValue={dataToDefault.additionalInfo}
-                    style={{ width: 350, margin: 10 }}
-                    onChange={({target: { value }}) => {
-                        setAddInfValue(value);
-                        props.setState(tempState)
-                    }}
-                    autoSize
-                />
-            </div>
-
-            <Button
-                onClick={handleButtonClick}
-                type='primary'
-                style={{ margin: 10 }}
-            >
-                Submit
-            </Button>
-
-            <Button
-                onClick={handleCancelClick}
-                style={{ margin: 10 }}
-            >
-                Cancel
-            </Button>
+                <HandleButton
+                    onClick={() => handleCancelClick()}
+                    style={{ margin: 10 }}
+                >
+                    Cancel
+                </HandleButton>
         </Window>
     )
 }

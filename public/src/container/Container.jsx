@@ -11,15 +11,12 @@ export default function Container(props) {
     const [ pointerEventsTable, setPointerEventsTable ] = useState('');
     const [ isEdit, setIsEdit ] = useState(false);
     const [ eventID, setEventID ] = useState();
-    const [ currentEvent, setCurrentEvent ] = useState();
+    const [ currentEvent, setCurrentEvent ] = useState({});
+    const [ handleButtonDisabled, setHandleButtonDisabled ] = useState(true);
 
     useEffect(() => {
         props.getEventList(1);
     }, [props.data.length]);
-
-    const useCurrentEvent = (data) => {
-        setCurrentEvent(data);
-    };
 
     let elem;
     if(toggleAddEvent) {
@@ -31,6 +28,8 @@ export default function Container(props) {
             isEdit={isEdit}
             ID={eventID}
             currentEvent={currentEvent}
+            handleButtonDisabled={handleButtonDisabled}
+            setHandleButtonDisabled={setHandleButtonDisabled}
         />;
     }
 
@@ -55,8 +54,8 @@ export default function Container(props) {
                 setOpacity={setTableOpacity}
                 setPointerEvents={setPointerEventsTable}
                 setIsEdit={setIsEdit}
-                setCurrentEvent={useCurrentEvent}
-                isClicked={handleAddButtonClick}
+                setCurrentEvent={setCurrentEvent}
+                isClicked={() => handleAddButtonClick()}
             />
             {elem}
         </div>
