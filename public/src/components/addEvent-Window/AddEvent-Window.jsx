@@ -15,7 +15,7 @@ export default function AddEvent(props) {
         props.currentEvent.eventName ? props.currentEvent.eventName : undefined
     );
     const [ dateValue, setDateValue ] = useState(
-        props.currentEvent.date ? props.currentEvent.date : null
+        props.currentEvent.date ? props.currentEvent.date : moment(new Date()).format('YYYY-MM-DD')
     );
     const [ placeValue, setPlaceValue ] = useState(
         props.currentEvent.place ? props.currentEvent.place : undefined
@@ -30,7 +30,6 @@ export default function AddEvent(props) {
         placeValue !== undefined
     ) {
         props.setHandleButtonDisabled(false);
-        console.log(props.handleButtonDisabled);
     }
 
     const handleButtonClick = () => {
@@ -67,14 +66,17 @@ export default function AddEvent(props) {
             props.setDisable(false);
             props.setOpacity(1);
             props.setPointerEvents('');
-            setTimeout(() => props.props.getEventList(), 500)
+            setTimeout(() => props.props.getEventList(), 500);
+            props.setCurrentEvent({});
         }
     };
 
     const handleCancelClick = () => {
+        props.setHandleButtonDisabled(true);
         props.setDisable(false);
         props.setOpacity(1);
         props.setPointerEvents('');
+        props.setCurrentEvent({});
     };
 
     let dataToDefault = { eventType: selectValue };
@@ -117,7 +119,6 @@ export default function AddEvent(props) {
                         placeholder="Event name"
                         defaultValue={dataToDefault.eventName}
                         style={{ width: 350, margin: 10 }}
-                        required
                         onChange={({target: { value }}) => {
                             setNameValue(value);
                         }}
@@ -127,7 +128,7 @@ export default function AddEvent(props) {
                 <div>
                     <DatePicker
                         style={{ width: 350, margin: 10 }}
-                        defaultValue={moment(dataToDefault.date, 'YYYY-MM-DD')}
+                        defaultValue={moment(dateValue, 'YYYY-MM-DD')}
                         onChange={(date, dateString) => {
                             setDateValue(dateString);
                         }}

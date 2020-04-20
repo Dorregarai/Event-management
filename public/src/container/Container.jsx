@@ -28,6 +28,7 @@ export default function Container(props) {
             isEdit={isEdit}
             ID={eventID}
             currentEvent={currentEvent}
+            setCurrentEvent={setCurrentEvent}
             handleButtonDisabled={handleButtonDisabled}
             setHandleButtonDisabled={setHandleButtonDisabled}
         />;

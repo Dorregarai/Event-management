@@ -15,17 +15,7 @@ const asyncController = route => (req, res) => {
 };
 
 async function getEventList(req, res) {
-    const {
-        eventType,
-        eventName,
-        isFull
-    } = req.query;
-
-    const events = await EventModel.getEventList(
-        eventType,
-        eventName,
-        isFull
-    );
+    const events = await EventModel.getEventList();
 
     res.
         status(HTTP_STATUS_CODES.OK)

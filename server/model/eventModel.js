@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const JoiBase = require("@hapi/joi");
-const JoiDate = require("@hapi/joi-date");
+const JoiBase = require('@hapi/joi');
+const JoiDate = require('@hapi/joi-date');
 
 const Joi = JoiBase.extend(JoiDate);
 
@@ -20,7 +20,7 @@ const EventSchema = new mongoose.Schema({
     },
     createdOn: {
         type: Date,
-        default: new Date()
+        default: Date.now
     },
     place: {
         type: String,
@@ -29,9 +29,9 @@ const EventSchema = new mongoose.Schema({
     additionalInfo: {
         type: String
     },
-    isView: {
+    isRemoved: {
         type: Boolean,
-        default: true
+        default: false
     },
 });
 
@@ -50,10 +50,10 @@ function validateEvent(event) {
 
 const Event = mongoose.model('Event', EventSchema);
 
-function getEventList(eventType, eventName){
-    const query = { isView: true };
-    if (eventType !== undefined) query.eventType = eventType;
-    if (eventName !== undefined) query.eventName = eventName;
+function getEventList(){
+    let now = new Date();
+
+    const query = { date: { $gt: now.setHours(0, 0, 0, 0) }, isRemoved: false };
 
     const field = null;
     return Event.find(query, field)
@@ -67,15 +67,8 @@ function editEvent(id, eventType, eventName, date, place, additionalInfo) {
 
 function removeEvent(id) {
     const query = { _id: id };
-    return Event.updateOne(query, { $set: { isView: false }})
+    return Event.updateOne(query, { $set: { isRemoved: true }})
 }
-
-(() => {
-    const query = { date: { $lte: Date.now() }};
-    const modification = { $set: { isView: false }};
-    console.log(Event.find(query), null);
-    return Event.updateOne(query, modification)
-})();
 
 module.exports = {
     Event,
