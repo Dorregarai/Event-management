@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Table } from "antd";
 import TableComponent from "./styled";
 import HandleButton from "../handleButton/HandleButton";
+import './style.css';
 
 export default function ContentTable(props) {
+    const [ handleShowToggle, setHandleShowToggle ] = useState(true);
+    const [ handleShowText, setHandleShowText ] = useState('Show');
+
     const setCurrentEvent = (record) => {
             props.setCurrentEvent(record);
             props.setID(record.ID);
@@ -22,6 +26,18 @@ export default function ContentTable(props) {
         setTimeout(() => {
             props.props.getEventList();
         }, 500);
+    };
+
+    const handleShowClick = () => {
+            setHandleShowToggle(false);
+            setHandleShowText('Hide');
+            props.props.getEventList(new Date(2020, 1, 1, 0, 0, 0, 0));
+    };
+
+    const handleHideClick = () => {
+            setHandleShowToggle(true);
+            setHandleShowText('Show');
+            props.props.getEventList(new Date());
     };
 
     const [ data ] = useState({
@@ -63,13 +79,13 @@ export default function ContentTable(props) {
                 title: 'Date',
                 dataIndex: 'date',
                 key: 'date',
-                sorter: (a, b) => a.date > b.date,
+                sorter: (elem1, elem2) => elem1.date > elem2.date,
             },
             {
                 title: 'Created on',
                 dataIndex: 'createdOn',
                 key: 'createdOn',
-                sorter: (a, b) => a.createdOn > b.createdOn,
+                sorter: (elem1, elem2) => elem1.createdOn > elem2.createdOn,
             },
             {
                 title: 'Place',
@@ -120,9 +136,21 @@ export default function ContentTable(props) {
                     disable={props.disable}
                 />
 
+                <HandleButton
+                    type='link'
+                    onClick={
+                        handleShowToggle ? () => handleShowClick() : () => handleHideClick()
+                    }
+                >
+                    {handleShowText} expired
+                </HandleButton>
+
                 <Table
                     dataSource={props.props.data}
                     columns={data.columns}
+                    rowClassName={
+                        record => Date.parse(record.date) > Date.now() ? '' : 'disabled-row'
+                    }
                 />
 
             </TableComponent>

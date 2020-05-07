@@ -50,10 +50,11 @@ function validateEvent(event) {
 
 const Event = mongoose.model('Event', EventSchema);
 
-function getEventList(){
+function getEventList(date){
     let now = new Date();
+    if(date === undefined) date = now.setHours(0, 0, 0, 0);
 
-    const query = { date: { $gt: now.setHours(0, 0, 0, 0) }, isRemoved: false };
+    const query = { date: { $gt: date } };
 
     const field = null;
     return Event.find(query, field)

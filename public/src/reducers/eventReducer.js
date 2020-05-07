@@ -8,7 +8,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case TYPES.GET_EVENTLIST_REQUEST:
             return Object.assign({}, state, {
-                page: action
+                showExpired: action.showExpired
             });
         case TYPES.GET_EVENTLIST_SUCCESS:
             return Object.assign({}, state, {

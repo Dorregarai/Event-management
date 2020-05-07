@@ -15,8 +15,7 @@ const asyncController = route => (req, res) => {
 };
 
 async function getEventList(req, res) {
-    const events = await EventModel.getEventList();
-
+    const events = await EventModel.getEventList(req.query.showExpired);
     res.
         status(HTTP_STATUS_CODES.OK)
         .send({

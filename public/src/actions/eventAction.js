@@ -2,9 +2,11 @@ import axios from 'axios';
 import * as TYPES from './types';
 import { call, put } from 'redux-saga/effects';
 
-const apiGetEventList = () => {
+const apiGetEventList = showExpired => {
     return axios
-        .get('http://localhost:3001/api')
+        .get('http://localhost:3001/api', {
+            params: {showExpired}
+    })
         .then(response => response.data)
 };
 
@@ -40,7 +42,7 @@ const apiRemoveEvent = (data) => {
 
 export function* fetchGetEventList(action) {
     try {
-        const eventList = yield call(apiGetEventList, action.page);
+        const eventList = yield call(apiGetEventList, action.showExpired);
         yield put({ type: TYPES.GET_EVENTLIST_SUCCESS, payload: eventList })
     } catch (error) {
         yield put({ type: TYPES.GET_EVENTLIST_FAILURE, payload: error })

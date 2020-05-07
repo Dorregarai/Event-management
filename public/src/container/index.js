@@ -1,6 +1,6 @@
-import Container from "./Container";
+import Container from './Container';
 import * as TYPES from '../actions/types';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 function mapStateToProps(state) {
     return {
@@ -10,9 +10,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getEventList: () => {
+        getEventList: showExpired => {
             dispatch({
-                type: TYPES.GET_EVENTLIST_REQUEST
+                type: TYPES.GET_EVENTLIST_REQUEST,
+                showExpired
             })
         },
         createEvent: (eventType, eventName, date, place, addInfo) => {

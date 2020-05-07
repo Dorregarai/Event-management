@@ -15,8 +15,8 @@ export default function Container(props) {
     const [ handleButtonDisabled, setHandleButtonDisabled ] = useState(true);
 
     useEffect(() => {
-        props.getEventList(1);
-    }, [props.data.length]);
+        props.getEventList();
+    }, [0]);
 
     let elem;
     if(toggleAddEvent) {
